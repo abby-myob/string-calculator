@@ -1,28 +1,44 @@
 using System;
-using System.Globalization;
-using System.Reflection.Metadata.Ecma335;
+using System.Collections.Generic;
 
 namespace CalcLibrary
 {
     public class StringCalculator
     {
-        public int Add(string str)
+        public int Add(string input)
         {
-            switch (str.Length)
+            if (input.Length == 0) return 0;
+
+            char[] delimiters;
+
+            if (input.Contains("//"))
             {
-                case 0: return 0;
-                case 1: if (int.TryParse(str, out int output)) return output; break;
+                var index = input.IndexOf('\n');
+                var delimiter = input.Substring(2, index - 2);
+                delimiters = delimiter.ToCharArray();
+                input = input.Substring(index + 1);
+            }
+            else
+            {
+                delimiters = new char[] {',', '\n'};
             }
 
-            var numbers = str.Split(",");
+            var numbers = input.Split(delimiters);
+            var negatives = new List<int>();
 
-            
             var sum = 0;
-            
+
             foreach (var number in numbers)
             {
-                Console.WriteLine(int.Parse(number));
-                sum += int.Parse(number);;
+                var num = int.Parse(number);
+                if (num < 0) negatives.Add(num);
+                sum += num;
+            }
+
+            if (negatives.Count > 0)
+            {
+                var exStr = string.Join(", ", negatives);
+                throw new ArgumentException($"Negatives not allowed: {exStr}");
             }
 
             return sum;
