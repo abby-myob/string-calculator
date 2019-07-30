@@ -115,5 +115,14 @@ namespace TestingCalc
 
             response.Should().Be(10);
         }
+        
+        [Fact]
+        public void Should_return_sum_when_a_delimiter_has_a_number_as_part_of_them_in_the_middle()
+        {
+            var calc = new StringCalculator();
+            var response = calc.Add("//[*1*][%]\n1*1*2%3");
+
+            response.Should().Be(6);
+        }
     }
 }
