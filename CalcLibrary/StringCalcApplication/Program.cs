@@ -1,4 +1,5 @@
 ﻿using System;
+using CalcLibrary;
 
 namespace StringCalcApplication
 {
@@ -6,7 +7,7 @@ namespace StringCalcApplication
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            StringCalculator calculator = new StringCalculator();
         }
     }
 }
