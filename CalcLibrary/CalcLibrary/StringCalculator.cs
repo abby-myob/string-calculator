@@ -10,33 +10,38 @@ namespace CalcLibrary
         public int Add(string input)
         {
             if (input.Length == 0) return 0;
-
+            
+            string[] numbers;
             char[] delimiters;
 
-            if (input.Contains("//"))
+            if (input.Contains("//["))
             {
                 var index = input.IndexOf('\n');
-                var delimiter = input.Substring(2, index - 2);
-                delimiters = delimiter.ToCharArray();
+                var delimiter = input.Substring(3, index - 4);
                 input = input.Substring(index + 1);
-            } 
-            else if (input.Contains("//["))
+                
+                numbers = input.Split(new[] { delimiter }, StringSplitOptions.None);
+            }
+            else if (input.Contains("//"))
             {
                 var index = input.IndexOf('\n');
-                var delimiter = input.Substring(3, index - 3);
-                delimiters = delimiter.ToCharArray();
+                string delimiter = input.Substring(2, index - 2);
                 input = input.Substring(index + 1);
+                
+                delimiters = delimiter.ToCharArray();
+                numbers = input.Split(delimiters);
             }
             else
             {
-                delimiters = new[] {',', '\n'};
-            }
+                delimiters = new []{ ',', '\n'};
+                numbers = input.Split(delimiters);
+            } 
 
-            var numbers = input.Split(delimiters);
+            
             var negatives = new List<int>();
-
             var sum = 0;
 
+            
             foreach (var number in numbers)
             {
                 var num = int.Parse(number);
