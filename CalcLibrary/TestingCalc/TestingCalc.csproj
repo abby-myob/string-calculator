@@ -13,6 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\CalcLibrary\CalcLibrary.csproj" />
       <ProjectReference Include="..\StringCalcApplication\StringCalcApplication.csproj" />
     </ItemGroup>
 
