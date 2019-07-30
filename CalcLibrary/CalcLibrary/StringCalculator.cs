@@ -1,34 +1,58 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Linq;
 using System.Text;
 
 namespace CalcLibrary
 {
     public class StringCalculator
     {
-        public int Add(string input)
+        public int Add(string inputString)
         {
-            if (input.Length == 0) return 0;
+            if (inputString.Length == 0) return 0;
             
-            string[] numbers;
-            char[] delimiters;
+            var numbers = SeparateTheIntegers(inputString);
+            var negatives = new List<int>();
+            var result = 0;
 
-            var indexOfn = input.IndexOf('\n');
-            
-            if (input.Contains("//["))
+            foreach (var number in numbers)
             {
-                StringBuilder stringBuilder = new StringBuilder();
-                List<string> delimiterList = new List<string>();
-
-                var i = 3;
-                while (i < indexOfn-1)
+                if (int.TryParse(number, out var num))
                 {
-                    stringBuilder.Append(input[i]);
+                    if (num < 0) negatives.Add(num);
+                    if (num >= 1000) continue;
+                    result += num;
+                }
+                else
+                {
+                    throw new ArgumentException($"Number is not a number {number}", nameof(inputString));
+                }
+            }
+            
+            if (negatives.Count > 0)
+            {
+                NegativesException(negatives);
+            }
 
-                    
-                    if (input[i + 1] == ']')
+            return result;
+        }
+        
+        private static IEnumerable<string> SeparateTheIntegers(string inputString)
+        {
+            var stringBuilder = new StringBuilder();
+            var delimiterList = new List<string>();
+            var indexOfn = inputString.IndexOf('\n');
+            var delimiters = new[] {',', '\n'};
+            var numbers = inputString.Split(delimiters);
+
+            if (inputString.Contains("//"))
+            {
+                var i = 2;
+                if (inputString.Contains("//[")) i = 3;
+
+                while (i < indexOfn)
+                {
+                    stringBuilder.Append(inputString[i]);
+                    if (inputString[i + 1] == ']' || (i + 1 == indexOfn))
                     {
                         i += 3;
                         delimiterList.Add(stringBuilder.ToString());
@@ -40,52 +64,17 @@ namespace CalcLibrary
                     }
                 }
 
-                input = input.Substring(indexOfn + 1);
-                numbers = input.Split( delimiterList.ToArray() , StringSplitOptions.None);
-            }
-            else if (input.Contains("//"))
-            {
-                string delimiter = input.Substring(2, indexOfn - 2);
-                
-                delimiters = delimiter.ToCharArray();
-                
-                input = input.Substring(indexOfn + 1);
-                numbers = input.Split(delimiters);
-            }
-            else
-            {
-                delimiters = new []{ ',', '\n'};
-                numbers = input.Split(delimiters);
-            } 
-
-            
-            var negatives = new List<int>();
-            var sum = 0;
-
-            
-            foreach (var number in numbers)
-            {
-                
-                if (int.TryParse(number, out var num))
-                {
-                    if (num < 0) negatives.Add(num);
-                    if (num >= 1000) continue;
-                    sum += num;
-                }
-                else
-                {
-                    throw new ArgumentException($"Number is not a number {number}", nameof(input));
-                }
-                
+                inputString = inputString.Substring(indexOfn + 1);
+                numbers = inputString.Split(delimiterList.ToArray(), StringSplitOptions.None);
             }
 
-            if (negatives.Count > 0)
-            {
-                var exStr = string.Join(", ", negatives);
-                throw new ArgumentException($"Negatives not allowed: {exStr}");
-            } 
-
-            return sum;
+            return numbers;
+        }
+        
+        private static void NegativesException(IEnumerable<int> negativesList)
+        {
+            var exStr = string.Join(", ", negativesList);
+            throw new ArgumentException($"Negatives not allowed: {exStr}");
         }
     }
 }
