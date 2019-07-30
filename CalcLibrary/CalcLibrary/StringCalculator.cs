@@ -20,18 +20,28 @@ namespace CalcLibrary
             {
                 var index = input.IndexOf('\n');
                 StringBuilder stringBuilder = new StringBuilder();
+                List<string> delimiterList = new List<string>();
 
                 var i = 3;
                 while (i < index-1)
                 {
-                    var delimiter = input[i];
-                    stringBuilder.Append(delimiter);
-                    i += 3;
+                    stringBuilder.Append(input[i]);
+
+                    
+                    if (input[i + 1] == ']')
+                    {
+                        i += 3;
+                        delimiterList.Add(stringBuilder.ToString());
+                        stringBuilder = new StringBuilder();
+                    }
+                    else
+                    {
+                        i++;
+                    }
                 }
 
-                delimiters = stringBuilder.ToString().ToCharArray();
                 input = input.Substring(index + 1);
-                numbers = input.Split(delimiters);
+                numbers = input.Split( delimiterList.ToArray() , StringSplitOptions.None);
             }
             else if (input.Contains("//["))
             {
@@ -81,6 +91,7 @@ namespace CalcLibrary
             if (negatives.Count > 0)
             {
                 var exStr = string.Join(", ", negatives);
+                
                 throw new ArgumentException($"Negatives not allowed: {exStr}");
             } 
 

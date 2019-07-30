@@ -106,5 +106,14 @@ namespace TestingCalc
 
             response.Should().Be(13);
         }
+        
+        [Fact]
+        public void Should_return_sum_when_there_are_more_than_one_delimiter_of_any_length()
+        {
+            var calc = new StringCalculator();
+            var response = calc.Add("//[***][#][%]\n1***2#3%4");
+
+            response.Should().Be(10);
+        }
     }
 }
