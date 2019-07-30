@@ -93,9 +93,18 @@ namespace TestingCalc
         public void Should_return_sum_when_delimiter_of_any_length_is_described_on_the_first_line()
         {
             var calc = new StringCalculator();
-            var response = calc.Add("//[***]\n1***2***3");
+            var response = calc.Add("//[***]\n1***2***4");
 
-            response.Should().Be(6);
+            response.Should().Be(7);
+        }
+        
+        [Fact]
+        public void Should_return_sum_when_there_are_more_than_one_delimiter_of_length_1()
+        {
+            var calc = new StringCalculator();
+            var response = calc.Add("//[*][%]\n1*2%10");
+
+            response.Should().Be(13);
         }
     }
 }

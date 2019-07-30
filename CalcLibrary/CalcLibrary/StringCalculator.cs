@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
+using System.Text;
 
 namespace CalcLibrary
 {
@@ -14,21 +15,40 @@ namespace CalcLibrary
             string[] numbers;
             char[] delimiters;
 
-            if (input.Contains("//["))
+
+            if (input.Contains("]["))
+            {
+                var index = input.IndexOf('\n');
+                StringBuilder stringBuilder = new StringBuilder();
+
+                var i = 3;
+                while (i < index-1)
+                {
+                    var delimiter = input[i];
+                    stringBuilder.Append(delimiter);
+                    i += 3;
+                }
+
+                delimiters = stringBuilder.ToString().ToCharArray();
+                input = input.Substring(index + 1);
+                numbers = input.Split(delimiters);
+            }
+            else if (input.Contains("//["))
             {
                 var index = input.IndexOf('\n');
                 var delimiter = input.Substring(3, index - 4);
-                input = input.Substring(index + 1);
                 
+                input = input.Substring(index + 1);
                 numbers = input.Split(new[] { delimiter }, StringSplitOptions.None);
             }
             else if (input.Contains("//"))
             {
                 var index = input.IndexOf('\n');
                 string delimiter = input.Substring(2, index - 2);
-                input = input.Substring(index + 1);
                 
                 delimiters = delimiter.ToCharArray();
+                
+                input = input.Substring(index + 1);
                 numbers = input.Split(delimiters);
             }
             else
@@ -44,10 +64,18 @@ namespace CalcLibrary
             
             foreach (var number in numbers)
             {
-                var num = int.Parse(number);
-                if (num < 0) negatives.Add(num);
-                if (num >= 1000) continue;
-                sum += num;
+                
+                if (int.TryParse(number, out var num))
+                {
+                    if (num < 0) negatives.Add(num);
+                    if (num >= 1000) continue;
+                    sum += num;
+                }
+                else
+                {
+                    throw new ArgumentException($"Number is not a number {number}", nameof(input));
+                }
+                
             }
 
             if (negatives.Count > 0)
