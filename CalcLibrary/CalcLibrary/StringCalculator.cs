@@ -15,15 +15,15 @@ namespace CalcLibrary
             string[] numbers;
             char[] delimiters;
 
-
-            if (input.Contains("]["))
+            var indexOfn = input.IndexOf('\n');
+            
+            if (input.Contains("//["))
             {
-                var index = input.IndexOf('\n');
                 StringBuilder stringBuilder = new StringBuilder();
                 List<string> delimiterList = new List<string>();
 
                 var i = 3;
-                while (i < index-1)
+                while (i < indexOfn-1)
                 {
                     stringBuilder.Append(input[i]);
 
@@ -40,25 +40,16 @@ namespace CalcLibrary
                     }
                 }
 
-                input = input.Substring(index + 1);
+                input = input.Substring(indexOfn + 1);
                 numbers = input.Split( delimiterList.ToArray() , StringSplitOptions.None);
-            }
-            else if (input.Contains("//["))
-            {
-                var index = input.IndexOf('\n');
-                var delimiter = input.Substring(3, index - 4);
-                
-                input = input.Substring(index + 1);
-                numbers = input.Split(new[] { delimiter }, StringSplitOptions.None);
             }
             else if (input.Contains("//"))
             {
-                var index = input.IndexOf('\n');
-                string delimiter = input.Substring(2, index - 2);
+                string delimiter = input.Substring(2, indexOfn - 2);
                 
                 delimiters = delimiter.ToCharArray();
                 
-                input = input.Substring(index + 1);
+                input = input.Substring(indexOfn + 1);
                 numbers = input.Split(delimiters);
             }
             else
@@ -91,7 +82,6 @@ namespace CalcLibrary
             if (negatives.Count > 0)
             {
                 var exStr = string.Join(", ", negatives);
-                
                 throw new ArgumentException($"Negatives not allowed: {exStr}");
             } 
 
