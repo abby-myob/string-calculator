@@ -77,5 +77,25 @@ namespace TestingCalc
             var exception = Assert.Throws<ArgumentException>(() => calc.Add("-1,2,-3"));
             Assert.Equal("Negatives not allowed: -1, -3", exception.Message);
         }
+        
+        [Theory]
+        [InlineData("1000,1000000,10000,3,3", 6)]
+        [InlineData("1222222,2,12123123,18", 20)]
+        public void Should_ignore_numbers_greater_or_equal_to_1000(string input, int expected)
+        {
+            var calc = new StringCalculator();
+            var response = calc.Add(input);
+
+            response.Should().Be(expected);
+        }
+        
+        [Fact]
+        public void Should_return_sum_when_delimiter_of_any_length_is_described_on_the_first_line()
+        {
+            var calc = new StringCalculator();
+            var response = calc.Add("//[***]\n1***2***3");
+
+            response.Should().Be(6);
+        }
     }
 }

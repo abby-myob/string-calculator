@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
+using System.Linq;
 
 namespace CalcLibrary
 {
@@ -17,10 +19,17 @@ namespace CalcLibrary
                 var delimiter = input.Substring(2, index - 2);
                 delimiters = delimiter.ToCharArray();
                 input = input.Substring(index + 1);
+            } 
+            else if (input.Contains("//["))
+            {
+                var index = input.IndexOf('\n');
+                var delimiter = input.Substring(3, index - 3);
+                delimiters = delimiter.ToCharArray();
+                input = input.Substring(index + 1);
             }
             else
             {
-                delimiters = new char[] {',', '\n'};
+                delimiters = new[] {',', '\n'};
             }
 
             var numbers = input.Split(delimiters);
@@ -32,6 +41,7 @@ namespace CalcLibrary
             {
                 var num = int.Parse(number);
                 if (num < 0) negatives.Add(num);
+                if (num >= 1000) continue;
                 sum += num;
             }
 
@@ -39,7 +49,7 @@ namespace CalcLibrary
             {
                 var exStr = string.Join(", ", negatives);
                 throw new ArgumentException($"Negatives not allowed: {exStr}");
-            }
+            } 
 
             return sum;
         }
